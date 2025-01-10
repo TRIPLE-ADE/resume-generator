@@ -22,7 +22,7 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ resumeData, setResumeDat
     index: number,
     field: keyof ResumeDataTypes,
     subfield: string,
-    value: string,
+    value: string | string[],
   ) => {
     setResumeData((prev) => {
       const newArray = Array.isArray(prev[field]) ? [...prev[field]] : [];
@@ -57,27 +57,29 @@ export const ResumeForm: React.FC<ResumeFormProps> = ({ resumeData, setResumeDat
   const addArrayItem = (field: keyof ResumeDataTypes) => {
     setResumeData((prev) => ({
       ...prev,
-      [field]: [
-        ...prev[field],
-        field === "experience"
-          ? { title: "", company: "", location: "", duration: "", responsibilities: [""] }
-          : field === "education"
-            ? { degree: "", institution: "", location: "", year: "" }
-            : field === "projects"
-              ? { name: "", description: "", technologies: [] }
-              : field === "certifications"
-                ? { name: "", issuer: "", year: "" }
-                : field === "skills"
-                  ? { category: "", skills: [] }
-                  : "",
-      ],
+      [field]: Array.isArray(prev[field])
+        ? [
+            ...prev[field],
+            field === "experience"
+              ? { title: "", company: "", location: "", duration: "", responsibilities: [""] }
+              : field === "education"
+                ? { degree: "", institution: "", location: "", year: "" }
+                : field === "projects"
+                  ? { name: "", description: "", technologies: [] }
+                  : field === "certifications"
+                    ? { name: "", issuer: "", year: "" }
+                    : field === "skills"
+                      ? { category: "", skills: [] }
+                      : "",
+          ]
+        : [],
     }));
   };
 
   const removeArrayItem = (field: keyof ResumeDataTypes, index: number) => {
     setResumeData((prev) => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index),
+      [field]: Array.isArray(prev[field]) ? prev[field].filter((_, i) => i !== index) : prev[field],
     }));
   };
 
